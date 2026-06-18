@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Events | Daughter of a King Inc</title>
+
+    <meta
+      name="description"
+      content="Upcoming events, gatherings, and opportunities to connect with the Daughter of a King Inc community and ministry."
+    />
+
+    <meta name="author" content="Daughter of a King Inc" />
+
+    <link rel="canonical" href="https://doakministries.org/events" />
+
+    <link rel="icon" type="image/png" href="/DOAK-Favicon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/css/styles.css" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Events | Daughter of a King Inc" />
+    <meta
+      property="og:description"
+      content="Upcoming ministry events and gatherings from Daughter of a King Inc."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://doakministries.org/events" />
+    <meta
+      property="og:image"
+      content="https://doakministries.org/images/opengraph_doaklogo.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Events | Daughter of a King Inc" />
+    <meta
+      name="twitter:description"
+      content="Upcoming ministry events and gatherings from Daughter of a King Inc."
+    />
+    <meta
+      name="twitter:image"
+      content="https://doakministries.org/images/opengraph_doaklogo.png"
+    />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "EventSeries",
+        "name": "Daughter of a King Inc Events",
+        "url": "https://doakministries.org/events",
+        "organizer": {
+          "@type": "Organization",
+          "name": "Daughter of a King Inc",
+          "url": "https://doakministries.org"
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="site-shell">
+      <div id="header"></div>
+
+      <main>
+        <section class="section">
+          <div class="container narrow centered">
+            <p class="section-label">Events</p>
+
+            <h1>Upcoming gatherings and ministry events</h1>
+
+            <p class="section-intro">
+              Join us for upcoming Daughter of a King ministry events designed
+              to encourage healing, connection, and faith-centered community.
+            </p>
+          </div>
+        </section>
+
+        <section class="section section-tint">
+          <div class="container">
+            <h2 style="margin-bottom: 25px">Upcoming Events</h2>
+
+            <div id="upcoming-events" class="cards three-up"></div>
+
+            <h2 style="margin-top: 50px; margin-bottom: 25px">Recent Events</h2>
+
+            <div id="past-events" class="cards three-up"></div>
+
+            <h2 style="margin-top: 60px; margin-bottom: 25px">
+              Full Ministry Event Calendar
+            </h2>
+
+            <div
+              style="
+                position: relative;
+                width: 100%;
+                padding-bottom: 65%;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+              "
+            >
+              <iframe
+                loading="lazy"
+                src="https://calendar.google.com/calendar/embed?src=629db396ee6eafb745c691bb8ffd1a49b25ccd9024bb90b7f4667ba0b314ea85@group.calendar.google.com&ctz=America/New_York"
+                style="
+                  border: 0;
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                "
+                frameborder="0"
+                scrolling="no"
+              >
+              </iframe>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <div id="footer"></div>
+    </div>
+
+    <script>
+      const calendarID =
+        "629db396ee6eafb745c691bb8ffd1a49b25ccd9024bb90b7f4667ba0b314ea85@group.calendar.google.com";
+
+      const feedURL = `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events?singleEvents=true&orderBy=startTime&maxResults=50&key=AIzaSyBDIo9rowMafFw8eORcRZEj-An3dIWgI1Q`;
+
+      fetch(feedURL)
+        .then((res) => res.json())
+        .then((data) => {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          const upcoming = [];
+          const past = [];
+
+          data.items.forEach((event) => {
+            let start;
+
+            if (event.start.dateTime) {
+              start = new Date(event.start.dateTime);
+            } else {
+              start = new Date(event.start.date + "T00:00:00");
+            }
+
+            start.setHours(0, 0, 0, 0);
+
+            const eventData = {
+              title: event.summary,
+              date: start,
+              link: event.htmlLink,
+              location: event.location || "",
+              time: event.start.dateTime || null,
+            };
+
+            if (start >= today) {
+              upcoming.push(eventData);
+            } else {
+              past.push(eventData);
+            }
+          });
+
+          upcoming.sort((a, b) => a.date - b.date);
+          past.sort((a, b) => b.date - a.date);
+
+          const upcomingContainer = document.getElementById("upcoming-events");
+          const pastContainer = document.getElementById("past-events");
+
+          function formatDate(date) {
+            return date.toLocaleDateString(undefined, {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            });
+          }
+
+          upcoming.slice(0, 10).forEach((event) => {
+            const card = document.createElement("a");
+
+            card.className = "card";
+            card.href = event.link;
+            card.target = "_blank";
+            card.rel = "noopener";
+
+            card.innerHTML = `
+<h3>${event.title}</h3>
+<p><strong>${formatDate(event.date)}</strong></p>
+${event.time ? `<p>${new Date(event.time).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}</p>` : ""}
+${event.location ? `<p>${event.location}</p>` : ""}
+`;
+
+            upcomingContainer.appendChild(card);
+          });
+
+          past.slice(0, 3).forEach((event) => {
+            const card = document.createElement("div");
+
+            card.className = "card";
+
+            card.innerHTML = `
+<h3>${event.title}</h3>
+<p>${formatDate(event.date)}</p>
+`;
+
+            pastContainer.appendChild(card);
+          });
+        });
+    </script>
+
+    <script src="/js/script.js" defer></script>
+  </body>
+</html>
