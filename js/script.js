@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const header = document.getElementById("header");
 
   if (header) {
-    fetch("/includes/header.html")
+    fetch("/header.html")
       .then(res => {
         if (!res.ok) {
           throw new Error(`Header failed to load: ${res.status}`);
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const footer = document.getElementById("footer");
 
   if (footer) {
-    fetch("/includes/footer.html")
+    fetch("/footer.html")
       .then(res => {
         if (!res.ok) {
           throw new Error(`Footer failed to load: ${res.status}`);
