@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         return res.text();
+        
       })
       .then(data => {
         header.innerHTML = data;
