@@ -5,11 +5,19 @@ document.addEventListener("DOMContentLoaded", function () {
   const header = document.getElementById("header");
 
   if (header) {
-    fetch("includes/header.html")
-      .then(res => res.text())
+    fetch("/includes/header.html")
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Header load failed: ${res.status}`);
+        }
+        return res.text();
+      })
       .then(data => {
         header.innerHTML = data;
         initMenu();
+      })
+      .catch(error => {
+        console.error("Error loading header:", error);
       });
   }
 
@@ -18,45 +26,94 @@ document.addEventListener("DOMContentLoaded", function () {
   const footer = document.getElementById("footer");
 
   if (footer) {
-    fetch("includes/footer.html")
-      .then(res => res.text())
+    fetch("/includes/footer.html")
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Footer load failed: ${res.status}`);
+        }
+        return res.text();
+      })
       .then(data => {
         footer.innerHTML = data;
+      })
+      .catch(error => {
+        console.error("Error loading footer:", error);
       });
   }
 
 });
 
+
 function initMenu() {
 
-  const toggle = document.querySelector('.menu-toggle');
-  const nav = document.querySelector('.site-nav');
+  const toggle = document.querySelector(".menu-toggle");
+  const nav = document.querySelector(".site-nav");
 
   if (!toggle || !nav) return;
 
-  toggle.addEventListener('click', () => {
-    const isOpen = nav.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', String(isOpen));
+  toggle.addEventListener("click", () => {
+
+    const isOpen = nav.classList.toggle("open");
+
+    toggle.setAttribute("aria-expanded", String(isOpen));
+
   });
 
-  nav.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => {
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
+  nav.querySelectorAll("a").forEach(link => {
+
+    link.addEventListener("click", () => {
+
+      nav.classList.remove("open");
+
+      toggle.setAttribute("aria-expanded", "false");
+
     });
+
   });
+
 
   /* Active navigation highlight */
 
-  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+  let currentPath = window.location.pathname;
+
+  /* Remove trailing slash except for homepage */
+  if (currentPath.length > 1) {
+    currentPath = currentPath.replace(/\/$/, "");
+  }
+
+  /* Treat .html URLs the same as clean URLs */
+  currentPath = currentPath.replace(/\.html$/, "");
+
+  /* Convert /index to homepage */
+  if (currentPath === "/index") {
+    currentPath = "/";
+  }
 
   nav.querySelectorAll("a").forEach(link => {
 
     const href = link.getAttribute("href");
 
-    if (!href || href.startsWith("http") || href.startsWith("mailto")) return;
+    if (
+      !href ||
+      href.startsWith("http") ||
+      href.startsWith("mailto")
+    ) {
+      return;
+    }
 
-    if (href === currentPage) {
+    let linkPath = href;
+
+    if (linkPath.length > 1) {
+      linkPath = linkPath.replace(/\/$/, "");
+    }
+
+    linkPath = linkPath.replace(/\.html$/, "");
+
+    if (linkPath === "/index") {
+      linkPath = "/";
+    }
+
+    if (linkPath === currentPath) {
       link.classList.add("active");
     }
 
