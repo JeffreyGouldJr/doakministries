@@ -1036,3 +1036,22 @@ grid-template-columns: 1fr;
 padding-top: 80px;
 padding-bottom: 100px;
 }
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+}
+
+.header-inner,
+.brand,
+.site-nav,
+.site-nav a {
+  position: relative;
+  z-index: 10000;
+  pointer-events: auto;
+}
+
+.site-nav a {
+  cursor: pointer;
+}
